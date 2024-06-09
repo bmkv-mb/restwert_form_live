@@ -1,0 +1,26 @@
+version: '3'
+services:
+  www:
+    image: miroslavblascanin/apache_cust:latest # you can build your own images with libraries and other depencencies and refernce them here. 
+                           #This one has mysqli installed, which isnt the case in the default php install
+    volumes:
+      - "./:/var/www/html" #sync project dir with container dir
+    ports:
+      - 80:80
+      - 443:443 # for future ssl traffic
+  db: 
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=php_docker
+      - MYSQL_USER=php_docker
+      - MYSQL_PASSWORD=password
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    volumes:
+      - "./db:/docker-entrypoint-initdb.d" # sync persistent sql files with container
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8001:80
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
