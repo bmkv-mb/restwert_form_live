@@ -11,8 +11,8 @@
 
 <body>
     <?php
-    include ($_SERVER['DOCUMENT_ROOT'] . '/Restwert/db/parse_customer_data.php');
-    //include 'ParseToDatabase.php';
+    include ('../db/parse_customer_data.php');
+
     // If translation is needed, replace the variables here. Translation can be built in with this. No functionalty yet.
     $fieldNames = [
         "german" => [
@@ -66,9 +66,9 @@
     ];
 
     $mainError = 0;
+
     // Check if the form has been submitted 
-    
-    if (isset($_POST["submit"])) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         validateForm();
     }
 
@@ -76,7 +76,7 @@
         displayForm();
     }
 
-
+    // Call function with empty params by default. If errors happen or required fields are empty, inputs will be populated with the user's data
     function displayForm(
         $language = "german",
         $mainError = 0,
@@ -121,8 +121,6 @@
     ) {
         global $fieldNames;
 
-        // if($mainError >= 1){echo "<p class='errorMessage'>" . htmlspecialchars($fieldNames['german']['error_message']) . "</p>";}
-    
         ?>
 
 
@@ -132,6 +130,7 @@
 
             </div>
 
+            <!-- Title Column -->
             <div class="column">
                 <div class="row">
                     <div class="field-header">
@@ -143,17 +142,19 @@
                         <option value="Frau" <?php if (isset($_POST['title']) && $_POST['title'] == $fieldNames['german']['female']) {
                             echo "selected";
                         } ?>>Frau</option>
-                        <option value="Herr" <?php if (isset($_POST['title']) && $_POST['title'] == $fieldNames['german']['male']) {
+                        <option value="Herr" <?php if (isset($_POST['title']) && $_POST['title'] == htmlspecialchars($fieldNames['german']['male'])) {
                             echo "selected";
                         } ?>>Herr</option>
                     </select>
                 </div>
                 <div class="row">
                     <div class="field-header" style="height:20px">
+                    <!-- Empty field for visuals -->
                     </div>
                 </div>
             </div>
 
+            <!-- Name and Surname Column -->
             <div class="column">
                 <div class="row">
                     <div class="field-header">
@@ -171,6 +172,7 @@
                 </div>
             </div>
 
+            <!-- Address and PO Box Column -->
             <div class="column">
                 <div class="row">
                     <div class="field-header">
@@ -186,7 +188,8 @@
                     <input type="text" name="po_box" id="po_box" value="<?= htmlspecialchars($po_box); ?>">
                 </div>
             </div>
-
+                        
+            <!-- Zip and City Column -->
             <div class="column">
                 <div class="row">
                     <div class="field-header">
@@ -204,6 +207,7 @@
                 </div>
             </div>
 
+            <!-- Email and Phone Column -->
             <div class="column">
                 <div class="row">
                     <div class="field-header">
@@ -221,6 +225,7 @@
                 </div>
             </div>
 
+            <!-- Iban and Bankname Column -->
             <div class="column">
                 <div class="row">
                     <div class="field-header">
@@ -238,6 +243,7 @@
                 </div>
             </div>
 
+            <!-- Checkbox to toggle alternative data -->
             <div class="alt_form_checkbox">
                 <input class="checkbox" type="checkbox" id="alt_form_check" name="alt_form_check" onclick="myFunction()"
                     <?php if (isset($_POST['alt_form_check'])) {
@@ -246,9 +252,10 @@
                 <label for="alt_form_check"> <?= htmlspecialchars($fieldNames['german']['alternative_checkbox']) ?> </label>
             </div>
 
-            <!-- Alternative Kontodaten -->
+            <!-- Alternative data -->
             <div class="alt_form" id="alt_form" style="display:<?= htmlspecialchars($keepAltFormOpen); ?>">
 
+            <!-- Alt Title Column -->
                 <div class="column">
                     <div class="row">
                         <div class="field-header">
@@ -265,10 +272,12 @@
                     </div>
                     <div class="row">
                         <div class="field-header" style="height:20px">
+                         <!-- Empty field for visuals -->
                         </div>
                     </div>
                 </div>
 
+                <!-- Alt Name and Alt Surname Column -->
                 <div class="column">
                     <div class="row">
                         <div class="field-header">
@@ -285,6 +294,7 @@
                     </div>
                 </div>
 
+                <!-- Alt Address and Alt PO Box Column -->
                 <div class="column">
                     <div class="row">
                         <div class="field-header">
@@ -301,6 +311,7 @@
                     </div>
                 </div>
 
+                <!-- Alt Zip and Alt City Column -->
                 <div class="column">
                     <div class="row">
                         <div class="field-header">
@@ -316,6 +327,7 @@
                     </div>
                 </div>
 
+                <!-- Alt Email and Alt Phone Column -->
                 <div class="column">
                     <div class="row">
                         <div class="field-header">
@@ -332,6 +344,7 @@
                     </div>
                 </div>
 
+                <!-- Alt Iban and Alt Bankname Column -->
                 <div class="column">
                     <div class="row">
                         <div class="field-header">
@@ -350,8 +363,11 @@
             </div>
 
 
+            <!-- Checkboxes for suggestions -->
             <label for="multi_checkbox"> <?= htmlspecialchars($fieldNames['german']['suggestion_text']) ?> </label>
             <div class="multi_checkbox">
+
+                <!-- Checkboxes for oral -->
                 <div class="field-header" id="multi_checkbox">
                     <input type="checkbox" id="oral" name="oral" value="Mündliche Empfehlung" <?php if (isset($_POST['oral'])) {
                         echo "checked";
@@ -359,6 +375,7 @@
                     <label for="oral"> <?= htmlspecialchars($fieldNames['german']['oral_suggestion']) ?></label>
                 </div>
 
+                <!-- Checkboxes for social media -->
                 <div class="field-header">
                     <input type="checkbox" id="socialmedia" name="socialmedia" value="Social Media" <?php if (isset($_POST['socialmedia'])) {
                         echo "checked";
@@ -367,6 +384,7 @@
                     </label>
                 </div>
 
+                <!-- Checkboxes for ricardo -->
                 <div class="field-header">
                     <input type="checkbox" id="ricardo" name="ricardo" value="Ricardo" <?php if (isset($_POST['ricardo'])) {
                         echo "checked";
@@ -374,6 +392,7 @@
                     <label for="ricardo"> <?= htmlspecialchars($fieldNames['german']['ricardo_suggestion']) ?> </label>
                 </div>
 
+                <!-- Checkboxes for flyer -->
                 <div class="field-header">
                     <input type="checkbox" id="flyer" name="flyer" value="Flyer" <?php if (isset($_POST['flyer'])) {
                         echo "checked";
@@ -382,6 +401,7 @@
                 </div>
             </div>
 
+            <!-- Checkboxes for TOS -->
             <div class="tos_checkbox">
                 <div class="field-header">
                     <input type="checkbox" id="agb" name="agb" value="AGBs" required>
@@ -395,7 +415,8 @@
             <input type="submit" name="submit">
 
         </form>
-
+        
+        <!-- Hide/Unhide if alternative data checkbox is unticked/ticked -->
         <script>
             function myFunction() {
                 var checkBox = document.getElementById("alt_form_check");
@@ -471,7 +492,6 @@
             "phone" => "",
             "iban" => "",
             "bankname" => "",
-            //"alternative_data" => "",
             "alt_title" => "",
             "alt_name" => "",
             "alt_surname" => "",
@@ -487,8 +507,12 @@
             "incorporated" => "unchecked"
         ];
 
+        
+        // Go through each data and check if empty. If not, trim the data and assing it. Else leave it empty
         isset($_POST["title"]) ? $title = trim($_POST["title"]) : $title = "";
         isset($_POST["alt_title"]) ? $alt_title = trim($_POST["alt_title"]) : $alt_title = "";
+
+        // If data not empty, clear errors and repopulate $data[...] for displayForm(). Else create and display error
         if (!empty($title)) {
             $title_error = "";
             $data["title"] = $title;
@@ -594,7 +618,7 @@
         }
 
         if (isset($_POST["alt_form_check"])) {
-            //$data["alternative_data"] = "1";
+
             $keepAltFormOpen = "display";
 
             $data["alt_title"] = $alt_title;
@@ -610,6 +634,8 @@
             $data["alt_bankname"] = $alt_bankname;
         }
 
+
+        // Concatenate suggestions and display nicely, if there are more than 1
         if (isset($_POST['oral'])) {
             $oral_suggestion = $_POST['oral'];
             if ($data["suggestions"] == "") {
@@ -634,20 +660,16 @@
             $ricardo_suggestion = $_POST['ricardo'];
             if ($data["suggestions"] == "") {
                 $data["suggestions"] .= $ricardo_suggestion;
-                ;
             } else {
                 $data["suggestions"] .= ", " . $ricardo_suggestion;
-                ;
             }
         }
         if (isset($_POST['flyer'])) {
             $flyer_suggestion = $_POST['flyer'];
             if ($data["suggestions"] == "") {
                 $data["suggestions"] .= $flyer_suggestion;
-                ;
             } else {
                 $data["suggestions"] .= ", " . $flyer_suggestion;
-                ;
             }
         }
 
@@ -662,9 +684,8 @@
 
         }
 
-
+        // If there were errors, display form with either empty or the repopulated entries 
         if ($mainError > 0) {
-            echo $data["suggestions"];
             displayForm(
                 $language,
                 $mainError,
@@ -711,6 +732,7 @@
             ParseToDatabase($data);
         }
     }
+
     ?>
 </body>
 

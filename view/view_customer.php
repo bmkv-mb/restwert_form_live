@@ -1,32 +1,12 @@
 <?php
-$myFile = pathinfo('C:/xampp/htdocs/restwert/view/view_customer.php');
-include ($_SERVER['DOCUMENT_ROOT'] . '/Restwert/db/get_data.php');
+$filename = basename(__FILE__);
+$filepath = dirname(__FILE__) . basename(__FILE__);
+
+include (dirname(__DIR__) . '/db/get_data.php');
+include (dirname(__DIR__) . '/db/update_db_entry.php')
 ?>
 <!DOCTYPE html>
 <html>
-<?php
-
-if (isset($_POST['dbform'])) {
-  foreach ($_POST['incorporated'] as $key => $value) {
-
-    $status = "checked";
-    $id = $key;
-
-    if ($value == "unchecked") {
-      $connection = Connect();
-      $SQL = $connection->prepare("UPDATE customers SET incorporated=? WHERE id=?");
-
-      $SQL->bind_param('si', $status, $id);
-      $SQL->execute();
-
-    } elseif ($status == "checked") {
-      echo 'ID ' . $id . ' is already ' . $status . "<br>";
-    }
-  }
-  header("Location:{$myFile['basename']}");
-}
-?>
-
 <head>
   <title>PHP & MySQL Pagination by CodeShack</title>
   <meta charset="utf-8">
@@ -34,6 +14,7 @@ if (isset($_POST['dbform'])) {
 </head>
 
 <body>
+  <!-- Shows a tooltip when user clicks on field and copies it -->
   <div class="tooltip">
     <div class="tooltiptext">
       <span>Kopiert!</span>
@@ -50,10 +31,11 @@ if (isset($_POST['dbform'])) {
         } ?>">
 
       </div>
+      <!-- Search function, Reset function and filter for unchecked entries -->
       <div class="search-btn">
-        <input type="submit" class="btn" 1--name="submit" value="Suchen">
+        <input type="submit" class="btn" name="submit" value="Suchen">
         <input type="submit" class="btn" name="reset" value="Reset">
-        <input type="submit"  class="btn"name="filter" value="Filter">
+        <input type="submit"  class="btn"name="filter" value="'Nicht eingetragen' Filtern">
       </div>
     </form>
   </div>
@@ -90,6 +72,7 @@ if (isset($_POST['dbform'])) {
         </thead>
         <?php while ($data = $result->fetch_assoc()): ?>
           <tr>
+            <!-- If entry in DB is "checked", show as checked and disable checkbox -->
             <td class=""><input type="checkbox" name="incorporated[<?php echo $data['id'] ?>]"
                 value="<?php echo $data['incorporated'] ?>" <?php if ($data['incorporated'] == 'checked') {
                      echo "checked disabled";
@@ -125,82 +108,18 @@ if (isset($_POST['dbform'])) {
       </div>
   </form>
 
-      <input style="margin-top:10px" type="submit" class="btn" form="dbform" name="dbform" value="Speichern"> </input><br>
+  <!-- Save button after changing a checkbox. Changes to DB won't occure unless pressed -->
+  <input style="margin-top:10px" type="submit" class="btn" form="dbform" name="dbform" value="Speichern"> </input><br>
 
-  <?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
-    <ul class="pagination">
-      <?php if ($page > 0): ?>
-        <li class="prev"><a href="<?php $myFile['basename'] ?>?page=<?php  if($page == 1) {echo $page;} else{echo $page - 1;}
-          if (isset($_GET['search'])) {
-            echo "&search=" . $_GET['search'] . "&submit=Suchen";
-          } ?>">Prev</a></li>
-      <?php endif; ?>
-
-      <?php if ($page > 3): ?>
-        <li class="start"><a href="<?php $myFile['basename'] ?>?page=1" ?>>1</a></li>
-        <li class="dots">...</li>
-      <?php endif; ?>
-
-      <?php if ($page - 2 > 0): ?>
-        <li class="page"><a href="<?php $myFile['basename'] ?>?page=<?php
-          if (isset($_GET['search'])) {
-            echo $page - 2 . "&search=" . $_GET['search'] . "&submit=Suchen";
-          } else {
-            echo $page - 2;
-          } ?>"><?php echo $page - 2 ?></a></li>
-      <?php endif; ?>
-      <?php if ($page - 1 > 0): ?>
-        <li class="page"><a href="<?php $myFile['basename'] ?>?page=<?php if (isset($_GET['search'])) {
-            echo $page - 1 . "&search=" . $_GET['search'] . "&submit=Suchen";
-          } else {
-            echo $page - 1;
-          } ?>"><?php echo $page - 1 ?></a></li>
-      <?php endif; ?>
-
-      <li class="currentpage"><a href="<?php $myFile['basename'] ?>?page=<?php if (isset($_GET['search'])) {
-          echo $page . "&search=" . $_GET['search'] . "&submit=Suchen";
-        } else {
-          echo $page;
-        } ?>"><?php echo $page; ?></a></li>
-
-      <?php if ($page + 1 < ceil($total_pages / $num_results_on_page) + 1): ?>
-        <li class="page"><a href="<?php $myFile['basename'] ?>?page=<?php if (isset($_GET['search'])) {
-            echo $page + 1 . "&search=" . $_GET['search'] . "&submit=Suchen";
-          } else {
-            echo $page + 1;
-          } ?>"><?php echo $page + 1 ?></a></li>
-      <?php endif; ?>
-      <?php if ($page + 2 < ceil($total_pages / $num_results_on_page) + 1): ?>
-        <li class="page"><a href="<?php $myFile['basename'] ?>?page=<?php if (isset($_GET['search'])) {
-            echo $page + 2 . "&search=" . $_GET['search'] . "&submit=Suchen";
-          } else {
-            echo $page + 2;
-          } ?>"><?php echo $page + 2 ?></a></li>
-      <?php endif; ?>
-
-      <?php if ($page < ceil($total_pages / $num_results_on_page) - 2): ?>
-        <li class="dots">...</li>
-        <li class="end"><a
-            href="<?php $myFile['basename'] ?>?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a>
-        </li>
-      <?php endif; ?>
-
-      <?php if (true): ?>
-        <li class="next"><a href="<?php $myFile['basename'] ?>?page=<?php if($page < ceil($total_pages / $num_results_on_page)) {echo $page + 1;} else{echo $page; }
-          if (isset($_GET['search'])) {
-            echo "&search=" . $_GET['search'] . "&submit=Suchen";
-          } ?>">Next</a></li>
-      <?php endif; ?>
-    </ul>
-  <?php endif; ?>
-
+  <!-- Pagination -->
+  <?php include (dirname(__DIR__) . '/view/pagination.php'); ?>
+                   
   <script>
+
+    // Function to copy text by clicking the field 
     const tds = document.querySelectorAll("td.tg-0lax");
     var tooltip = document.querySelector('.tooltip')
 
-    function clearPopup() {
-      tooltip.classList.remove('active');
-    }
     tds.forEach((td) => {
       td.onclick = function () { document.execCommand("copy"); }
 
@@ -212,18 +131,20 @@ if (isset($_POST['dbform'])) {
           }
         }
       );
+
+      // Popup and fade-out on successful copy
       td.addEventListener('click', function () {
         tooltip.classList.add('active');
         setTimeout(clearPopup, 500);
       });
     }
     );
+
+    function clearPopup() {
+      tooltip.classList.remove('active');
+    }
   </script>
-
-
-
 </body>
-
 </html>
 <?php
 ?>

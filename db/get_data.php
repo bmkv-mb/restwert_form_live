@@ -1,16 +1,18 @@
 <?php
-include ($_SERVER['DOCUMENT_ROOT'] . '/Restwert/db/parse_customer_data.php');
+include ('../db/parse_customer_data.php');
 
 $connection = Connect();
 
 if (isset($_GET["reset"])) {
-    header("Location: {$myFile['basename']}");
+    header("Location: ../view/view_customer.php");
 }
 
 if (isset($_GET["filter"])) {
     $filter = 'unchecked';
-    // Get the data from our table "customers" containing the search value.
+    $_GET['search'] = "";
+
     $sqlsearch = "SELECT * FROM customers WHERE incorporated LIKE '%$filter%'";
+    // Get the data from our table "customers" containing the search value.
 
     // Get the total number of records from our table "customers" containing the search value.
     $total_pages = Connect()->query($sqlsearch)->num_rows;
