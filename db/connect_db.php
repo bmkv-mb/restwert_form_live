@@ -1,24 +1,28 @@
 <?php
 
 function Connect()
-                {
-                    $servername = "localhost";
-                    $database = "form_db";
-                    $username = "root";
-                    $password = "";
+{
+    $servername = "localhost";
+    $database = "form_db";
+    $username = "root";
+    $password = "";
 
+    # Use this if app is built into docker #
 
-                    // use this if app is built into docker
-                    // $connection = mysqli_connect(
-                    //     'db' , 
-                    //     'php_docker',
-                    //     'password',
-                    //     'php_docker'
-                    // );
-                    
+    // $connection = new mysqli(
+    //     'db' , 
+    //     'php_docker',
+    //     'password',
+    //     'php_docker'
+    // );
 
-                    // Create a connection
-                    $connection = mysqli_connect($servername, $username, $password, $database);
+    // Create connection
+    $connection = new mysqli($servername, $username, $password, $database);
 
-                    return $connection;
-                }
+    // Check connection
+    if ($connection->connect_error) {
+        die("Connection failed: " . $connection->connect_error);
+    }else{
+        return $connection;
+    }
+}
