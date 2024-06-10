@@ -1,4 +1,5 @@
 <?php
+// Used in pagination
 $filename = basename(__FILE__);
 $filepath = dirname(__FILE__) . basename(__FILE__);
 
