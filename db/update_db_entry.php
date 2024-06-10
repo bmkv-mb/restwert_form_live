@@ -18,6 +18,7 @@ if (isset($_POST['dbform'])) {
       echo 'ID ' . $id . ' is already ' . $status . "<br>";
     }
   }
+  mysqli_close($connection);
   header("Location:{$filename}");
 }
 ?>
